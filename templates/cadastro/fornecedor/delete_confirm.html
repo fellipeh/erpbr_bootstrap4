@@ -1,0 +1,31 @@
+{% extends "base/base.html" %}
+{% load staticfiles %}
+
+{% block conteudo %}
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Deseja realmente excluir?</h3>
+                </div>
+                <div class="panel-body">
+                    <p>Deseja realmente excluir: <strong>{{ object.razao_social }}</strong>?</p>
+                    <br>
+                    <p>Clique em Confirmar, para excluir ou Cancelar para retornar a listagem.</p>
+                    <p>Atenção! Esta ação não poderá ser refeita.</p>
+                </div>
+                <div class="panel-footer">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <input class="btn btn-link"
+                               type="button" value="Cancelar"
+                               onclick="window.history.go(-1);"/>
+                        <input class="btn btn-danger" type="submit"
+                               value="Confirmar"/>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

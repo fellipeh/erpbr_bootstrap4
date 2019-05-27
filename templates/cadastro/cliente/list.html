@@ -1,0 +1,174 @@
+{% extends "base_desk/base.html" %}
+{% load static %}
+
+{% block page_header %}
+    <div class="row mb-2">
+        <div class="col-sm-6">
+            <h1>Clientes
+                <small>Listagem geral</small>
+            </h1>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="{% url 'desk:dashboard' %}">Início</a></li>
+                <li class="breadcrumb-item active">Listagem de Clientes</li>
+            </ol>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block conteudo %}
+
+    <div class="row toolbar-pf table-view-pf-toolbar" id="toolbar1">
+        <div class="col-sm-12">
+            <form class="toolbar-pf-actions">
+                <div class="form-group">
+                    <a class="btn btn-sm btn-default" href="{% url 'cadastro:cliente_create' %}"><i
+                            class="fa fa-plus"></i>
+                        Novo
+                        Registro</a>
+                    <button type="button" class="btn btn-sm btn-info" data-toggle="modal"
+                            data-target="#modal-pesquisar">
+                        <i class="fa fa-search"></i> Pesquisar
+                    </button>
+
+                    {% if filter.data %}
+                        &nbsp;&nbsp;&nbsp;
+                        <a class="btn btn-xs btn-warning" href="{% url 'cadastro:cliente_list' %}">Filtro Ativo <i
+                                class="fa fa-close"></i></a>
+                    {% endif %}
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <table class="table table-condensed table-striped table-bordered table-hover table-responsive" id="tblList1">
+        <thead>
+        <tr class="bg-light-blue">
+            <th>Nome/Razão Social</th>
+            <th>E-Mail</th>
+            <th>Documento</th>
+            <th>Tel. Principal</th>
+            <th class="col-md-1">Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for i in cliente_list %}
+            <tr>
+                <td>
+                    <a href="{% url 'cadastro:cliente_update' i.id %}">
+                        {{ i.razao_social }}
+                    </a>
+                </td>
+                <td>{{ i.email|default_if_none:"" }}</td>
+                <td>{% if i.tipo_pessoa == 'PF' %}{{ i.format_cpf|default_if_none:"" }}{% else %}
+                    {{ i.format_cnpj|default_if_none:"" }}{% endif %}</td>
+                <td>{{ i.tel1|default_if_none:"" }}</td>
+                <td>
+                    <div class="btn-group">
+                        <a class="btn btn-xs bg-light-blue" href="{% url 'cadastro:cliente_update' i.id %}">Editar</a>
+                        {#                        <a class="btn btn-danger btn-xs" href="{% url 'cadastro:cliente_delete' i.id %}">Excluir</a>#}
+                        <button type="button" class="btn btn-xs bg-light-blue dropdown-toggle" data-toggle="dropdown">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                            <li><a href="{% url 'cadastro:cliente_delete' i.id %}">Excluir registro</a></li>
+                            {#                                <li><a href="#">Another action</a></li>#}
+                            {#                                <li><a href="#">Something else here</a></li>#}
+                            {#                                <li class="divider"></li>#}
+                            {#                                <li><a href="#">Separated link</a></li>#}
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="6">Nenhum registro encontrado.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <form class="content-view-pf-pagination table-view-pf-pagination clearfix" id="pagination1">
+        {% if cliente_list.has_other_pages %}
+            <div class="form-group">
+                <ul class="pagination pagination-pf-back">
+                    {% if cliente_list.has_previous %}
+                        <li><a href="?page={{ cliente_list.previous_page_number }}" title="Voltar"><span
+                                class="i fa fa-angle-left"></span></a></li>
+                    {% else %}
+                        <li class="disabled"><a href="#" title="Voltar"><span class="i fa fa-angle-left"></span></a>
+                        </li>
+                    {% endif %}
+                </ul>
+                {% if cliente_list.has_previous %}
+                    <li><a href="?page={{ cliente_list.previous_page_number }}"><span
+                            class="i fa fa-angle-left"></span></a></li>
+                {% else %}
+                    <li class="disabled"><span>&laquo;</span></li>
+                {% endif %}
+                {% for i in cliente_list.paginator.page_range %}
+                    {% if cliente_list.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                    {% else %}
+                        <li class="pagination-pf-pages"><a href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                <ul class="pagination pagination-pf-forward">
+                    {% if cliente_list.has_next %}
+                        <li><a href="?page={{ cliente_list.next_page_number }}" title="Próximo"><span
+                                class="i fa fa-angle-right"></span></a></li>
+                    {% else %}
+                        <li class="disabled"><a href="#" title="Próximo"><span
+                                class="i fa fa-angle-right"></span></a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        {% endif %}
+    </form>
+
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="modal-pesquisar">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Aplicar filtro</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'cadastro:cliente_list' %}" method="get"
+                          autocomplete="off" id="form-pesq" class="form-horizontal">
+                        <div class="col-md-12">
+                            <table>
+                                <tbody>
+                                {{ filter.form.as_table }}
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" id="btn_search">Aplicar Filtro</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js_fim %}
+
+
+    <script>
+        $(document).ready(function () {
+            $("#btn_search").on('click', function () {
+                $("#form-pesq").submit();
+            });
+        });
+    </script>
+{% endblock %}

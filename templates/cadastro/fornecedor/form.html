@@ -1,0 +1,268 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% load bootstrap3 %}
+{% load erpbr_form widget_tweaks %}
+
+{% block page_header %}
+    <h1>
+        Fornecedor
+        <small>Criar / Editar Registro</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="{% url 'desk:dashboard' %}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+        <li><a href="{% url 'cadastro:fornecedor_list' %}"> Fornecedores</a></li>
+        <li class="active">Criar / Editar Registro</li>
+    </ol>
+
+{% endblock %}
+
+{% block conteudo %}
+
+    <form class="form-horizontal form-horizontal-pf-align-left required-pf" action="" method="POST"
+          enctype="multipart/form-data" id="form_pessoa" role="form"
+          ng-controller="fornecedorFormCtrl" ng-init="getValores('{{ form.tipo_pessoa.value }}')" >
+        {% csrf_token %}
+
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        {{ form.errors }}
+        {% bootstrap_form_errors form %}
+
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+        {% for error in form.field_errors %}
+            <div class="alert alert-danger" role="alert">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">Dados do Registro</div>
+            <div class="panel-body">
+                <div class="col-md-12">
+
+                    {% default_field form.razao_social %}
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Informações
+                                    Gerais</a>
+                                </li>
+                                <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Endereço</a>
+                                </li>
+                                <li><a href="#tab_3" data-toggle="tab">Dados Bancários</a></li>
+                            </ul>
+                            <br>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="tab_1">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    {% default_field form.tipo_pessoa %}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    {% default_field form.site %}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    {% default_field form.email %}
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    {% default_field form.informacoes_adicionais %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1"></div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    {% default_field form.tel1_tipo %}
+                                                </div>
+                                                <div class="col-md-3">
+                                                    {% default_field form.tel1 %}
+                                                </div>
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-2">
+                                                    {% default_field form.tel2_tipo %}
+                                                </div>
+                                                <div class="col-md-3">
+                                                    {% default_field form.tel2 %}
+                                                </div>
+                                            </div>
+                                            <div class="row" ng-show="(form.tipo_pessoa=='PF')">
+                                                <div class="col-md-3">
+                                                    {% default_field form.fis_cpf %}
+                                                </div>
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-3">
+                                                    {% default_field form.fis_rg %}
+                                                </div>
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-3">
+                                                    {% default_field form.fis_dtnasc %}
+                                                </div>
+                                            </div>
+                                            <div class="row" ng-show="form.tipo_pessoa=='PJ'">
+                                                <div class="col-md-4">
+                                                    {% default_field form.jur_cnpj %}
+                                                </div>
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-3">
+                                                    {% default_field form.jur_inscricao_estadual %}
+                                                </div>
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-4">
+                                                    {% default_field form.jur_sit_fiscal %}
+                                                </div>
+                                            </div>
+                                            <div class="row" ng-show="form.tipo_pessoa=='PJ'">
+                                                <div class="col-md-5">
+                                                    {% default_field form.jur_nome_fantasia %}
+                                                </div>
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-6">
+                                                    {% default_field form.jur_responsavel %}
+                                                </div>
+
+                                            </div>
+                                            <div class="row" ng-show="form.tipo_pessoa=='PJ'">
+                                                <div class="col-md-5">
+                                                    {% default_field form.jur_suframa %}
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <!-- /.tab-pane -->
+                                <div class="tab-pane" id="tab_2">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                {% default_field form.tipo_endereco %}
+                                            </div>
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-9">
+                                                {% default_field form.logradouro %}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                {% default_field form.numero %}
+                                            </div>
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-4">
+                                                {% default_field form.bairro %}
+                                            </div>
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-4">
+                                                {% default_field form.complemento %}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                {% default_field form.municipio %}
+                                            </div>
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-2">
+                                                {% default_field form.cep %}
+                                            </div>
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-2">
+                                                {% default_field form.uf %}
+                                            </div>
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-2">
+                                                {% default_field form.pais %}
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="tab-pane" id="tab_3">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                {% default_field form.banco_padrao %}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                {% default_field form.banco_agencia %}
+                                            </div>
+                                            <div class="col-md-1">
+                                                {% default_field form.banco_agencia_dig %}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                {% default_field form.banco_conta %}
+                                            </div>
+                                            <div class="col-md-1">
+                                                {% default_field form.banco_conta_dig %}
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="panel-footer">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <a href="{% url 'cadastro:fornecedor_list' %}" class="btn btn-default">Cancelar</a>
+            </div>
+        </div>
+
+    </form>
+{% endblock %}
+
+
+{% block extra_js_fim_top %}
+    <script src="{% static 'js/controllers/ng-cadastro-fornecedor.min.js' %}"></script>
+{% endblock %}
+
+
+{% block extra_js_fim %}
+    <script src="{% static 'node_modules/bootstrap-select/dist/js/bootstrap-select.min.js' %}"></script>
+    <script>
+        $('.selectpicker').selectpicker();
+        $("#id_fis_cpf").mask("000.000.000-00");
+        $("#id_jur_cnpj").mask("00.000.000/0000-00");
+        $("#id_fis_dtnasc").mask("00/00/0000");
+        $("#id_tel1").blur(function (event) {
+            if ($(this).val().length == 15) {
+                $("#id_tel1").mask("(00) 00000-0009")
+            } else {
+                $("#id_tel1").mask("(00) 0000-00009")
+            }
+        });
+        $("#id_tel2").blur(function (event) {
+            if ($(this).val().length == 15) {
+                $("#id_tel2").mask("(00) 00000-0009")
+            } else {
+                $("#id_tel2").mask("(00) 0000-00009")
+            }
+        });
+    </script>
+{% endblock %}
