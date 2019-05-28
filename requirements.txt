@@ -9,7 +9,7 @@ django-password-reset==1.0
 git+https://github.com/fellipeh/django-tenant-schemas
 django-tools==0.40.4
 django-widget-tweaks==1.4.2
-djangorestframework==3.8.2
+djangorestframework==3.9.1
 future==0.15.0
 lxml==4.2.4
 MarkupSafe==1.0
